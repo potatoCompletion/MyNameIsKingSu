@@ -1,13 +1,23 @@
 package hello.hellospring.controller;
 
 public class MemberForm {
-    private String name;
+    private String userId;
+    private String userPassword;
 
-    public String getName() {
-        return name;
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserId(String name) {
+        this.userId = name;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 }

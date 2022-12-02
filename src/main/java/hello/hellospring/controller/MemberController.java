@@ -1,5 +1,6 @@
 package hello.hellospring.controller;
 
+import hello.hellospring.common.TokenInfo;
 import hello.hellospring.domain.Member;
 import hello.hellospring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class MemberController {
     @PostMapping("/members/new")
     public String create(MemberForm form) {
         Member member = new Member();
-        member.setName(form.getName());
+        member.setUserId(form.getUserId());
+        member.setUserPassword(form.getUserPassword());
 
         memberService.join(member);
 
@@ -40,5 +42,17 @@ public class MemberController {
         model.addAttribute("members", members);
 
         return "members/memberList";
+    }
+
+    @PostMapping("/members/login")
+    public TokenInfo login(LoginForm form) {
+        TokenInfo tokenInfo = memberService.logIn(form);
+
+        return tokenInfo;
+    }
+
+    @GetMapping("/members/success")
+    public String success() {
+        return "success";
     }
 }
