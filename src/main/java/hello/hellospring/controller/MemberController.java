@@ -1,42 +1,38 @@
 package hello.hellospring.controller;
 
-import hello.hellospring.common.TokenInfo;
+import hello.hellospring.common.JwtTokenProvider;
 import hello.hellospring.domain.Member;
 import hello.hellospring.service.MemberService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/members")
+@RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
-    @GetMapping("/members/new")
-    public String createForm() {
-        return "members/createMemberForm";
-    }
-
-    @PostMapping("/members/new")
+    @PostMapping("/new")
     public String create(MemberForm form) {
-        Member member = new Member();
-        member.setUserId(form.getUserId());
-        member.setUserPassword(form.getUserPassword());
+        Member member = Member.builder()
+                        .userId(form.getUserId())
+                        .userPassword(form.getUserPassword())
+                        .build();
 
         memberService.join(member);
 
         return "redirect:/";
     }
 
-    @GetMapping("/members")
+    @GetMapping("/memberlist")
     public String list(Model model) {
         List<Member> members = memberService.findMembers();
         model.addAttribute("members", members);
@@ -44,14 +40,21 @@ public class MemberController {
         return "members/memberList";
     }
 
-    @PostMapping("/members/login")
-    public TokenInfo login(LoginForm form) {
-        TokenInfo tokenInfo = memberService.logIn(form);
+    @PostMapping("/login")
+    public String login(LoginForm form) {
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(form.getId(), form.getPassword());
 
-        return tokenInfo;
+        // 2. 실제 검증(사용자 비밀번호 체크) 이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        return jwtTokenProvider.generateToken(authentication).toString();
     }
 
-    @GetMapping("/members/success")
+    @GetMapping("/success")
     public String success() {
         return "success";
     }

@@ -1,58 +1,72 @@
 package hello.hellospring.repository;
 
 import hello.hellospring.domain.Member;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MemoryMemberRepositoryTest {
-    MemoryMemberRepository repository = new MemoryMemberRepository();
 
-    @AfterEach
-    public void afterEach() {
-        repository.clearStore();
-    }
+    @Autowired
+    private MemberRepository repository;
+//    private JpaMemberRepository repository = new JpaMemberRepository();
+
+//    @AfterEach
+//    public void afterEach() {
+//        repository;
+//    }
 
     @Test
     void save() {
-        Member member = new Member();
-        member.setName("spring");
+        Member member = Member.builder()
+                        .userId("spring")
+                        .userPassword("spring")
+                        .build();
 
         repository.save(member);
 
-        Member result = repository.findById(member.getId()).get();
+        Member result = repository.findById(member.getId()).orElse(Member.builder().build());
 
         assertThat(member).isEqualTo(result);
     }
 
     @Test
     void findByName() {
-        Member member1 = new Member();
-        member1.setName("spring1");
+        Member member1 = Member.builder()
+                .userId("spring1")
+                .userPassword("spring1PW")
+                .build();
+
         repository.save(member1);
 
-        Member member2 = new Member();
-        member2.setName("spring2");
-        repository.save(member2);
-
-        Member result = repository.findByName("spring1").get();
+        Member result = repository.findByUserId("spring1").get();
 
         assertThat(member1).isEqualTo(result);
     }
 
     @Test
     void findAll() {
-        Member member1 = new Member();
-        member1.setName("spring1");
+        Member member1 = Member.builder()
+                .userId("spring1")
+                .userPassword("spring1PW")
+                .build();
+
         repository.save(member1);
 
-        Member member2 = new Member();
-        member2.setName("spring2");
+        Member member2 = Member.builder()
+                .userId("spring2")
+                .userPassword("spring2PW")
+                .build();
         repository.save(member2);
 
         List<Member> result = repository.findAll();

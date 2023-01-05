@@ -1,5 +1,6 @@
 package hello.hellospring.domain;
 
+import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,13 +35,21 @@ public class Member implements UserDetails {
     private String lastLogin;
 
     @Column(name = "create_date", nullable = false)
-    private String createDate;
+    private String createDate;  // create_date 컬럼은 자동생성
 
-    public Member() {
+    @Builder
+    public Member(String userId, String userPassword) {
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
         Date time = new Date();
 
         this.createDate = dateTimeFormat.format(time);
+
+        // 안전한 객체 생성을 위한 검증 (필수 값이 없을 시 에러내기 위하여)
+        Assert.hasText(userId, "userId mut not be empty!");
+        Assert.hasText(userPassword, "userPassword mut not be empty!");
+
+        this.userId = userId;
+        this.userPassword = userPassword;
     }
 
     public Long getId() {
@@ -57,10 +66,6 @@ public class Member implements UserDetails {
 
     public void setUserId(String username) {
         this.userId = username;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
     }
 
     public void setUserPassword(String userPassword) {
@@ -91,29 +96,40 @@ public class Member implements UserDetails {
         this.createDate = createDate;
     }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    @CollectionTable(name="member_roles_tb")
-    private List<String> roles = new ArrayList<>();
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @Builder.Default
+//    @CollectionTable(name="member_roles_tb")
+//    private List<String> roles = new ArrayList<>();
+//
+//    public List<String> getRoles() {
+//        return roles;
+//    }
+    private String roles;
 
-    public List<String> getRoles() {
-        return roles;
-    }
+    public String getRoles() { return roles; }
+
+    public void setRoles(String roles) { this.roles = roles; }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        Collection<SimpleGrantedAuthority> roles = new ArrayList<SimpleGrantedAuthority>();
+        roles.add(new SimpleGrantedAuthority(getRoles()));
+
+        return roles;
     }
+
+    @Override
+    public String getPassword() { return userPassword; }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return this.roles.stream()
+//                .map(SimpleGrantedAuthority::new)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public String getUsername() {
         return userId;
-    }
-
-    @Override
-    public String getPassword() {
-        return userPassword;
     }
 
     @Override
