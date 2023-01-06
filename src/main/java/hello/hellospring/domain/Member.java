@@ -3,6 +3,7 @@ package hello.hellospring.domain;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor
 @Entity
 @Table(name="memberinfo_tb")
 public class Member implements UserDetails {
@@ -39,9 +41,9 @@ public class Member implements UserDetails {
 
     @Builder
     public Member(String userId, String userPassword) {
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+        // 생성일자를 삽입
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date time = new Date();
-
         this.createDate = dateTimeFormat.format(time);
 
         // 안전한 객체 생성을 위한 검증 (필수 값이 없을 시 에러내기 위하여)
