@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,9 +39,10 @@
             </div>
         </div>
     </form>
+
     <p>
-        <a href="/members/new">회원가입</a>
-        <a href="/members">흔적 목록</a>
+        <a sec:authorize="isAnonymous()" href="/members/new">회원가입</a>
+        <a sec:authorize="isAuthenticated()" href="/members/memberlist">흔적 목록</a>
     </p>
 </div>
 </body>

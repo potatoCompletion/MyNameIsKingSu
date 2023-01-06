@@ -46,6 +46,9 @@ public class Member implements UserDetails {
         Date time = new Date();
         this.createDate = dateTimeFormat.format(time);
 
+        // 역할(권한) 생성
+        this.roles = "USER";
+
         // 안전한 객체 생성을 위한 검증 (필수 값이 없을 시 에러내기 위하여)
         Assert.hasText(userId, "userId mut not be empty!");
         Assert.hasText(userPassword, "userPassword mut not be empty!");
