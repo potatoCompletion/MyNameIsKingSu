@@ -1,7 +1,7 @@
-package hello.hellospring.service;
+package mynameiskingsu.service;
 
-import hello.hellospring.domain.Member;
-import hello.hellospring.repository.MemberRepository;
+import mynameiskingsu.domain.Member;
+import mynameiskingsu.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

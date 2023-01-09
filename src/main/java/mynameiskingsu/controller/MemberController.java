@@ -1,8 +1,9 @@
-package hello.hellospring.controller;
+package mynameiskingsu.controller;
 
-import hello.hellospring.common.JwtTokenProvider;
-import hello.hellospring.domain.Member;
-import hello.hellospring.service.MemberService;
+import mynameiskingsu.common.JwtTokenProvider;
+import mynameiskingsu.common.TokenInfo;
+import mynameiskingsu.domain.Member;
+import mynameiskingsu.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -47,7 +48,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(LoginForm form, Model model) {
+    public TokenInfo login(LoginForm form, Model model) {
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(form.getId(), form.getPassword());
@@ -57,14 +58,14 @@ public class MemberController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        var tokenInfo = jwtTokenProvider.generateToken(authentication);
+        return jwtTokenProvider.generateToken(authentication);
 
-        model.addAttribute("token", tokenInfo);
-
-        return "redirect:/";
+//        model.addAttribute("token", tokenInfo);
+//
+//        return "redirect:/";
     }
 
-    @GetMapping("/success")
+    @PostMapping("/success")
     public String success() {
         return "success";
     }

@@ -1,4 +1,4 @@
-package hello.hellospring.controller;
+package mynameiskingsu.controller;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

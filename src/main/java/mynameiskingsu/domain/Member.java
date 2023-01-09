@@ -1,4 +1,4 @@
-package hello.hellospring.domain;
+package mynameiskingsu.domain;
 
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;

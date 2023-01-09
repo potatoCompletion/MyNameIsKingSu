@@ -1,4 +1,4 @@
-package hello.hellospring.common;
+package mynameiskingsu.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

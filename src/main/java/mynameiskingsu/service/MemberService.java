@@ -1,17 +1,9 @@
-package hello.hellospring.service;
+package mynameiskingsu.service;
 
-import hello.hellospring.common.JwtTokenProvider;
-import hello.hellospring.common.TokenInfo;
-import hello.hellospring.controller.LoginForm;
-import hello.hellospring.domain.Member;
-import hello.hellospring.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
+import mynameiskingsu.domain.Member;
+import mynameiskingsu.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
