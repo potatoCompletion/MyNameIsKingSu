@@ -2,8 +2,8 @@ package mynameiskingsu.domain;
 
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import mynameiskingsu.common.Roles;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +13,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Entity
 @Table(name="memberinfo_tb")
 public class Member implements UserDetails {
+
+    // Override된 메서드들은 UserDetails 구현 메서드들
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,21 +40,20 @@ public class Member implements UserDetails {
     private String createDate;  // create_date 컬럼은 자동생성
 
     @Builder
-    public Member(String userId, String userPassword) {
-        // 생성일자를 삽입
+    public Member(String userId, String userPassword, Roles roles) {
+
+        // 안전한 객체 생성을 위한 검증 (빈 값이 들어올 시 에러내기 위하여)
+        Assert.hasText(userId, "userId mut not be empty!");
+        Assert.hasText(userPassword, "userPassword mut not be empty!");
+
+        // 현재 일자를 형식에 맟춰 생성일자로 삽입
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date time = new Date();
         this.createDate = dateTimeFormat.format(time);
 
-        // 역할(권한) 생성
-        this.roles = "USER";
-
-        // 안전한 객체 생성을 위한 검증 (필수 값이 없을 시 에러내기 위하여)
-        Assert.hasText(userId, "userId mut not be empty!");
-        Assert.hasText(userPassword, "userPassword mut not be empty!");
-
         this.userId = userId;
         this.userPassword = userPassword;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -101,36 +100,25 @@ public class Member implements UserDetails {
         this.createDate = createDate;
     }
 
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    @Builder.Default
-//    @CollectionTable(name="member_roles_tb")
-//    private List<String> roles = new ArrayList<>();
-//
-//    public List<String> getRoles() {
-//        return roles;
-//    }
-    private String roles;
+    @Enumerated(EnumType.STRING)
+    private Roles roles;
 
-    public String getRoles() { return roles; }
+    public Roles getRoles() { return roles; }
 
-    public void setRoles(String roles) { this.roles = roles; }
+    public void setRoles(Roles roles) { this.roles = roles; }
 
+    // 테이블 두개를 join 해서 정보를 가져올때 사용하는 방법인데.. UserDetails 포함 메서드라 구현만 해놓고
+    // 실제 roles에 대한 정보는 memberinfo_tb에서 가져온다.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<SimpleGrantedAuthority> roles = new ArrayList<SimpleGrantedAuthority>();
-        roles.add(new SimpleGrantedAuthority(getRoles()));
+        roles.add(new SimpleGrantedAuthority(getRoles().toString()));
 
         return roles;
     }
 
     @Override
     public String getPassword() { return userPassword; }
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return this.roles.stream()
-//                .map(SimpleGrantedAuthority::new)
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     public String getUsername() {

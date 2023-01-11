@@ -34,22 +34,19 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 사용 비활성화 (토큰 사용하기 때문)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/members/login", "/members/new").permitAll()  // 권한없이 접근가능한 url
-//                .antMatchers("/members/success").hasRole("USER")
-                .anyRequest().authenticated()  // 모든 요청에 대해 인증된 사용자만 가능
+                    .antMatchers("/", "/members/new").permitAll()  // 권한없이 접근가능한 url
+    //                .antMatchers("/members/success").hasRole("USER")
+                    .anyRequest().authenticated()  // 모든 요청에 대해 인증된 사용자만 가능
                 .and()
                 .formLogin()
-                .loginPage("/")  // 로그인 페이지 url(GET, loginView 반환)
+                    .loginPage("/")  // 로그인 페이지 url(GET, loginView 반환)
                     .successHandler(loginSuccessHandler)  // 로그인 성공 핸들러
                     .failureHandler(loginFailureHandler)  // 로그인 실패 핸들러
                     .usernameParameter("id")  // 넘겨주는 로그인 파라미터 (기본 username, 나의 경우 id로 세팅)
                     .passwordParameter("password")  // id와 같음
                     .loginProcessingUrl("/login")  // 로그인 프로세스 url (직접 구현 x, 내부 생성)
 //                    .defaultSuccessUrl("/members/success")
-                    .permitAll()
-                .and()
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                    .permitAll();
         return http.build();
     }
 

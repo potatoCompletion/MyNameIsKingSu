@@ -19,8 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/new")
     public String createForm() {
@@ -47,6 +45,7 @@ public class MemberController {
         return "members/memberList";
     }
 
+    // 아이디 패스워드 권한인증 후 토큰 발급 메서드 (현재는 spring security loginForm 으로 대체)
 //    @PostMapping("/login")
 //    public String login(LoginForm form, Model model) {
 //        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
@@ -67,11 +66,6 @@ public class MemberController {
 
     @GetMapping("/success")
     public String success() {
-        return "success";
-    }
-
-    @PostMapping("/success")
-    public String successp() {
         return "success";
     }
 }
