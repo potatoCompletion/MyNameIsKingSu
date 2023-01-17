@@ -7,18 +7,16 @@
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            redirect: 'follow',
             body: 'id=' + form.id.value + "&password=" + form.password.value
         }
         fetch(url, option)
-            .then((response) => {
-                if (response.status === 302) {
-                    fetch(response.headers.get('location'), {
-                        headers: {
-                            Authentication: response.headers.get('Authentication')
-                        }
-                    })
-                }
+            .then(response => {
+                var json = JSON.parse(response.body.toString());
+                fetch('/members/success', {
+                    headers: {
+                        Authentication: 'Bearer ' + json.accessToken,
+                    }
+                })
             })
     }
 </script>
@@ -36,7 +34,7 @@
 <body class="p-3 m-0 border-0 bd-example bd-example-row">
 <div class="container text-left">
     <h1>내 이름은 김완수다</h1>
-    <form id=formtemp th:action="@{/login}" method="post">
+    <form id=formtemp th:action="@{/login}" onsubmit="sub('/login', this);" method="post">
         <div class="row">
             <div class="col-sm-3">
                 <div class="row">

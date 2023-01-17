@@ -1,5 +1,6 @@
 package mynameiskingsu.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -21,7 +22,7 @@ import java.io.PrintWriter;
 //@Component(value = "authenticationSuccessHandler")
 @Component
 @RequiredArgsConstructor
-public class LoginSuccessHandler implements AuthenticationSuccessHandler {
+public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RequestCache requestCache = new HttpSessionRequestCache();
@@ -42,11 +43,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         response.setHeader("Authorization", tokenInfo.getGrantType() + " " + tokenInfo.getAccessToken());
         PrintWriter writer = response.getWriter();
-        writer.println(tokenInfo);
+        writer.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tokenInfo));
 
-        if (savedRequest != null) {
-            url = savedRequest.getRedirectUrl();
-        }
-        redirectStrategy.sendRedirect(request, response, url);
+//        if (savedRequest != null) {
+//            url = savedRequest.getRedirectUrl();
+//        }
+//
+//
+//
+//        redirectStrategy.sendRedirect(request, response, url);
     }
 }

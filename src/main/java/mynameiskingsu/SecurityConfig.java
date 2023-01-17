@@ -35,7 +35,6 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                     .antMatchers("/", "/members/new").permitAll()  // 권한없이 접근가능한 url
-    //                .antMatchers("/members/success").hasRole("USER")
                     .anyRequest().authenticated()  // 모든 요청에 대해 인증된 사용자만 가능
                 .and()
                 .formLogin()
@@ -45,8 +44,10 @@ public class SecurityConfig {
                     .usernameParameter("id")  // 넘겨주는 로그인 파라미터 (기본 username, 나의 경우 id로 세팅)
                     .passwordParameter("password")  // id와 같음
                     .loginProcessingUrl("/login")  // 로그인 프로세스 url (직접 구현 x, 내부 생성)
-//                    .defaultSuccessUrl("/members/success")
-                    .permitAll();
+                    .permitAll()
+                .and()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // securityContext 이용하기 위함. 없을 시 토큰 발급 기록불가
+
         return http.build();
     }
 
