@@ -1,6 +1,7 @@
 package mynameiskingsu.domain;
 
 import io.jsonwebtoken.lang.Assert;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import mynameiskingsu.common.Roles;
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name="memberinfo_tb")
 public class Member implements UserDetails {
 

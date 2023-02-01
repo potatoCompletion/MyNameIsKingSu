@@ -43,7 +43,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
         response.setHeader("Authorization", tokenInfo.getGrantType() + " " + tokenInfo.getAccessToken());
         PrintWriter writer = response.getWriter();
-        writer.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tokenInfo));
+        writer.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tokenInfo));  // json pretty response body에 입력
 
 //        if (savedRequest != null) {
 //            url = savedRequest.getRedirectUrl();
