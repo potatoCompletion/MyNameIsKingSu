@@ -13,11 +13,8 @@
         fetch(url, option)
             .then((response)=> {
                 response.json()
+                localStorage.setItem('accessToken', response.json().accessToken);
             })
-            .then((tokenInfo) => {
-                console.log(tokenInfo);
-                localStorage.setItem('accessToken', tokenInfo.accessToken);
-            });
     }
 </script>
 
