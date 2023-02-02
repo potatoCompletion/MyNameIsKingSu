@@ -1,13 +1,8 @@
 package mynameiskingsu.controller;
 
-import mynameiskingsu.common.JwtTokenProvider;
-import mynameiskingsu.common.TokenInfo;
 import mynameiskingsu.domain.Member;
 import mynameiskingsu.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +61,6 @@ public class MemberController {
 
     @GetMapping("/success")
     public String success() {
-        return "success";
+        return "loginResult";
     }
 }

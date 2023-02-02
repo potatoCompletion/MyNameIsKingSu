@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <script>
-    async function sub(url, form) {
+    function sub(url, form) {
         var option = {
             method: "POST",
             mode: "no-cors",
@@ -10,16 +10,14 @@
             },
             body: 'id=' + form.id.value + "&password=" + form.password.value
         }
-        await fetch(url, option)
-            .then((response) => response.json())
-            .then((json) => {
-                console.log(json);
-                fetch('/members/success', {
-                    headers: {
-                        Authentication: 'Bearer ' + json.accessToken,
-                    }
-                })
+        fetch(url, option)
+            .then((response)=> {
+                response.json()
             })
+            .then((tokenInfo) => {
+                console.log(tokenInfo);
+                localStorage.setItem('accessToken', tokenInfo.accessToken);
+            });
     }
 </script>
 

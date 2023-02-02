@@ -3,6 +3,7 @@ package mynameiskingsu.common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -28,6 +29,9 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     private final RequestCache requestCache = new HttpSessionRequestCache();
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
+    private final String AT_HEADER = "AT_HEADER";
+    private final String RT_HEADER = "RT_HEADER";
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
     FilterChain chain, Authentication authentication) {
@@ -36,20 +40,20 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        SavedRequest savedRequest = requestCache.getRequest(request, response);  // 클라이언트가 원래 접근하려던 url 확인 용도
+
         var tokenInfo = jwtTokenProvider.generateToken(authentication);
-        SavedRequest savedRequest = requestCache.getRequest(request, response);
+        response.setHeader(AT_HEADER, tokenInfo.getGrantType() + " " + tokenInfo.getAccessToken()); // Header에 accessToken 추가
+        response.setHeader(RT_HEADER, tokenInfo.getGrantType() + " " + tokenInfo.getRefreshToken()); // Header에 refreshToken 추가
 
-        String url = "/members/success"; // set default url
-
-        response.setHeader("Authorization", tokenInfo.getGrantType() + " " + tokenInfo.getAccessToken());
         PrintWriter writer = response.getWriter();
-        writer.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tokenInfo));  // json pretty response body에 입력
+        writer.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tokenInfo));
 
+//        String url = "/members/success"; // set default url
+//
 //        if (savedRequest != null) {
 //            url = savedRequest.getRedirectUrl();
-//        }
-//
-//
+//        }   // 클라이언트가 원래 접근하려던 url이 있을 경우
 //
 //        redirectStrategy.sendRedirect(request, response, url);
     }
