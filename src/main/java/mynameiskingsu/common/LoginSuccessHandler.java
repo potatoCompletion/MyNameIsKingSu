@@ -41,7 +41,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         SavedRequest savedRequest = requestCache.getRequest(request, response);  // 클라이언트가 원래 접근하려던 url 확인 용도
-
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         var tokenInfo = jwtTokenProvider.generateToken(authentication);
         response.setHeader(AT_HEADER, tokenInfo.getGrantType() + " " + tokenInfo.getAccessToken()); // Header에 accessToken 추가
         response.setHeader(RT_HEADER, tokenInfo.getGrantType() + " " + tokenInfo.getRefreshToken()); // Header에 refreshToken 추가

@@ -11,10 +11,13 @@
             body: 'id=' + form.id.value + "&password=" + form.password.value
         }
         fetch(url, option)
-            .then((response)=> {
-                response.json()
-                localStorage.setItem('accessToken', response.json().accessToken);
+            .then(response => {
+                response.json();
             })
+            .then(tokenInfo => {
+                localStorage.setItem("accessToken", tokenInfo.accessToken);
+            })
+            .catch((error) => console.log(error));
     }
 </script>
 
