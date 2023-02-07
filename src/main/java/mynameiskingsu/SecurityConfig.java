@@ -31,8 +31,8 @@ public class SecurityConfig {
 
         http
                 .csrf().disable()  // csrf 정책 미적용
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 사용 비활성화 (토큰 사용하기 때문)
-                .and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 사용 비활성화 (토큰 사용하기 때문)
+//                .and()    // SSR 환경에서 토큰 사용하기 때문에 로그인 정보 기록하기 위한 세션 사용
                 .authorizeRequests()
                     .antMatchers("/", "/members/new").permitAll()  // 권한없이 접근가능한 url
                     .anyRequest().authenticated()  // 모든 요청에 대해 인증된 사용자만 가능
