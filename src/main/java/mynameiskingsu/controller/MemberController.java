@@ -3,11 +3,14 @@ package mynameiskingsu.controller;
 import mynameiskingsu.domain.Member;
 import mynameiskingsu.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/members")
@@ -62,5 +65,14 @@ public class MemberController {
     @GetMapping("/success")
     public String success() {
         return "loginResult";
+    }
+
+    @GetMapping("/whoareyou")
+    public String memberInfo(Model model) {
+
+        Optional<Member> member = memberService.getCurrentUser();
+        model.addAttribute("member", member.get());
+
+        return "members/whoareyou";
     }
 }

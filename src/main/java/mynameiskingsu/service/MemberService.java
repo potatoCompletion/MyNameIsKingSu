@@ -2,6 +2,8 @@ package mynameiskingsu.service;
 
 import mynameiskingsu.domain.Member;
 import mynameiskingsu.repository.MemberRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,8 +40,23 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    /**
+     * 고유 id 값으로 멤버 특정
+     *
+     * @param id
+     * @return Optional<Member>
+     */
     public Optional<Member> findOne(Long id) {
         return memberRepository.findById(id);
+    }
+
+
+    public Optional<Member> getCurrentUser() {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails)principal;
+        String userName = userDetails.getUsername();
+
+        return memberRepository.findByUserId(userName);
     }
 
 }
